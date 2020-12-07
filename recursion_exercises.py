@@ -37,6 +37,22 @@ def gcd(x: int, y: int) -> int:
 # doesn't return anything until remainder == 0 - at which point, returns the divisor that yielded it
 
 
+def convert_to_binary(x: int) -> str:
+    """Convert a base-ten integer into its binary equivalent."""
+    # divide x by 2
+    # the remainder is the last binary digit
+    # divide the quotient of x // 2 by 2
+    # the remainder is the second-to-last binary digit
+    # repeat until quotient == 0
+    if x // 2 == 0:
+        return str(x % 2)
+    return convert_to_binary(x // 2) + str(x % 2)
+
+# convert_to_binary(2) -> convert_to_binary(1) + "0" -> "1" + "0"
+# 3 -> convert_to_binary(1) + "1"
+# 4 -> convert_to_binary(2) + "0" -> convert_to_binary(1) + "0" + "0" -> "1" + "0" + "0"
+
+print(convert_to_binary(4))
 
 
 print("here for debugging purposes only")
