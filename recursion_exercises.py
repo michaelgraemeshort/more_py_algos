@@ -44,15 +44,47 @@ def convert_to_binary(x: int) -> str:
     # divide the quotient of x // 2 by 2
     # the remainder is the second-to-last binary digit
     # repeat until quotient == 0
-    if x // 2 == 0:
-        return str(x % 2)
-    return convert_to_binary(x // 2) + str(x % 2)
+    def inner(x):
+        if x // 2 == 0:
+            return str(x % 2)
+        return convert_to_binary(x // 2) + str(x % 2)
+
+    assert type(x) == int, "Integers only."
+    if x < 0:
+        x *= -1
+        return "-" + inner(x)
+    return inner(x)
 
 # convert_to_binary(2) -> convert_to_binary(1) + "0" -> "1" + "0"
 # 3 -> convert_to_binary(1) + "1"
 # 4 -> convert_to_binary(2) + "0" -> convert_to_binary(1) + "0" + "0" -> "1" + "0" + "0"
 
-print(convert_to_binary(4))
+
+def multiply_list_elements(l):
+    """Returns the product of all the elements in a list."""
+    # not sure how to do type hints for lists containing different data types, returning who knows what data type
+    if not l:
+        return 1
+    return l[0] * multiply_list_elements(l[1:])
+
+
+def sum_range(num: int) -> int:
+    """Returns the sum of range(num + 1) using recursion."""
+    assert type(num) == int, "Non-negative integers only."
+    if num == 0:
+        return 0
+    return num + sum_range(num - 1)
+
+
+def reverse_string(s: str) -> str:
+    """Returns s, reversed using recursion."""
+    assert type(s) == str, "Strings only."
+    if not s:
+        return ""
+    return s[-1] + reverse_string(s[:-1])
+
+
+
 
 
 print("here for debugging purposes only")
