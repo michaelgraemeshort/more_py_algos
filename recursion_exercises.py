@@ -63,13 +63,14 @@ def convert_to_binary(x: int) -> str:
 def multiply_list_elements(l):
     """Returns the product of all the elements in a list."""
     # not sure how to do type hints for lists containing different data types, returning who knows what data type
+    assert type(l) == list, 
     if not l:
         return 1
     return l[0] * multiply_list_elements(l[1:])
 
 
 def sum_range(num: int) -> int:
-    """Returns the sum of range(num + 1) using recursion."""
+    """Returns the sum of range(num + 1)."""
     assert type(num) == int, "Non-negative integers only."
     if num == 0:
         return 0
@@ -77,14 +78,98 @@ def sum_range(num: int) -> int:
 
 
 def reverse_string(s: str) -> str:
-    """Returns s, reversed using recursion."""
+    """Reverses s using recursion."""
     assert type(s) == str, "Strings only."
     if not s:
         return ""
     return s[-1] + reverse_string(s[:-1])
 
 
+def is_palindrome(s: str) -> bool:
+    """Returns True if s is a palindrome. Otherwise, False."""
+    assert type(s) == str, "Strings only."
+    if not s:
+        return True
+    if s[0] != s[-1]:
+        return False
+    return is_palindrome(s[1:-1])
 
 
+def recursive_any(l: list, fn) -> bool:
+    """Returns True if callback function fn returns True given any element from list l. Otherwise, False."""
+    if not l:
+        return False
+    if fn(l[0]):
+        return True
+    return recursive_any(l[1:], fn)
 
-print("here for debugging purposes only")
+
+def flatten(l: list) -> list:
+    """Returns a new, flattened, l."""
+    flattened = []
+    for i in l:
+        if type(i) == list: # /try:
+            flattened.extend(flatten(i))
+        else:   # /except:
+            flattened.append(i)
+    return flattened
+
+# list.append appends an object to the list
+# list.extend appends elements from an iterable to a list, i.e. has a flattening effect
+# this one is weird and not my invention. step through the below to clarify
+
+# l = [1, 2, [3, 4], [[5, 6]]]
+# print(flatten(l))
+
+
+def r_capitalize(l: list) -> list:
+    """Recursively calls str.capitalize on each string in l."""
+    result = []
+    if not l:
+        return []
+    result.append(l[0].capitalize())
+    return result + r_capitalize(l[1:])
+ 
+    
+def sum_even_values(d: dict) -> int:
+    """Returns the sum of all even values in d, using recursion if d contains nested dictionaries."""
+    total = 0
+    for value in d.values():
+        if type(value) == int:
+            if not value % 2:
+                total += value
+        elif type(value) == dict:
+            total += sum_even_values(value)
+    return total
+     
+
+def r_upper(l: list) -> list:
+    """Recursively calls str.upper on each string in l."""
+    result = []
+    if not l:
+        return []
+    result.append(l[0].upper())
+    return result + r_upper(l[1:])
+
+
+def stringify_numbers(d: dict) -> dict:
+    """Converts d values that are integers into strings."""
+    result = {}
+    for key, value in d.items():
+        if type(value) == int:
+            result[key] = str(value)
+        elif type(value) == dict:
+            result[key] = stringify_numbers(value)
+    return result
+            
+
+def collect_strings(d: dict) -> dict:
+    """Returns a list of those values of d that are strings."""
+    result = []
+    for key, value in d.items():
+        if type(value) == str:
+            result.append(value)
+        elif type(value) == dict:
+            result.extend(collect_strings(value))
+    return result
+
