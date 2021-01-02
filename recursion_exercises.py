@@ -63,7 +63,7 @@ def convert_to_binary(x: int) -> str:
 def multiply_list_elements(l):
     """Returns the product of all the elements in a list."""
     # not sure how to do type hints for lists containing different data types, returning who knows what data type
-    assert type(l) == list, 
+    assert type(l) == list
     if not l:
         return 1
     return l[0] * multiply_list_elements(l[1:])
@@ -166,7 +166,7 @@ def stringify_numbers(d: dict) -> dict:
 def collect_strings(d: dict) -> dict:
     """Returns a list of those values of d that are strings."""
     result = []
-    for key, value in d.items():
+    for key, value in d.items():    # just use d.values()
         if type(value) == str:
             result.append(value)
         elif type(value) == dict:
