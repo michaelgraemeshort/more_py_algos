@@ -82,11 +82,21 @@ class DoublyLinkedList:
         new_node = Node(data)
         if not self.head:
             self.head = new_node
-            self.last = new_node
+            self.tail = new_node
             return
         new_node.previous = self.tail
         self.tail.next = new_node
         self.tail = new_node
+
+    def add_last_node(self, n):
+        if not self.head:
+            self.head = n
+            self.tail = n
+            return
+        n.previous = self.tail
+        if self.tail:
+            self.tail.next = n
+        self.tail = n
 
     def add_after(self, target_node_data, new_data):
         new_node = Node(new_data)
@@ -285,6 +295,58 @@ class DoublyLinkedList:
             node = next_node
         self.tail = tail
 
+        # this is not how it's done, surprisingly
+        # concatenate three lists: < value, == value, > value
+
+
+def sum_lists(ll_1, ll_2):
+    # given two numbers, each in the form of a backwards linked list (e.g. 2 -> 1 -> 3 for 312)
+    # return their sum, also as a backwards linked list
+    # ideas: first number is the ones, second the tens, etc (10^0, 10^1, 10^2, ...)
+    # sum the ones, then the tens, etc, carrying one over each time if necessary
+
+    if not ll_1.head:
+        return ll_2
+    if not ll_2.head:
+        return ll_1
+    node_1 = ll_1.head
+    node_2 = ll_2.head
+    result = []
+    carry = 0
+    while node_1 or node_2:
+        s = 0
+        if node_1:
+            s += node_1.data
+            node_1 = node_1.next
+        if node_2:
+            s += node_2.data
+            node_2 = node_2.next
+        s += carry
+        carry, remainder = divmod(s, 10)
+        result.append(remainder)
+    return DoublyLinkedList(result)
+
+
+def intersect(ll_1, ll_2):
+    # see https://www.geeksforgeeks.org/write-a-function-to-get-the-intersection-point-of-two-linked-lists/
+    node_1 = ll_1.head
+    node_2 = ll_2.head
+    difference_in_length = len(ll_1) - len(ll_2)
+    if difference_in_length > 0:
+        for i in range(difference_in_length):
+            node_1 = node_1.next
+    elif difference_in_length < 0:
+        for i in range(abs(difference_in_length)):
+            node_2 = node_2.next
+    while node_1:
+        if node_1 is node_2:
+            return node_1
+        node_1 = node_1.next
+        node_2 = node_2.next
+    return False
+
+
+
 
 # wrote this a little while ago. summary:
 # initialise DLL with an iterable
@@ -295,10 +357,4 @@ class DoublyLinkedList:
 # dll = DoublyLinkedList((1, 1, 2, 2, 3, 4, 4, 5, 5))
 
 # CHALLENGES
-dll = DoublyLinkedList([4, 3, 2])
-# dll = DoublyLinkedList([10, 4, 20, 10, 3])
-# dll = DoublyLinkedList([1, 4, 2, 10])
-# dll = DoublyLinkedList([1, 4, 3, 2, 5, 2, 3])
-print(dll)
-dll.partition(3)
-print(dll)
+
