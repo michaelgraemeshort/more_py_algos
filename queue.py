@@ -7,7 +7,7 @@ class Queue:
             self.q = q
 
     # def __str__(self):
-    #     if self.is_empty:     <-- BROKEN why??
+    #     if self.is_empty:     <-- BROKEN why??    <-- MISSING PARENS!!
     #         return "queue is empty"
     #     return str(self.q)
 
