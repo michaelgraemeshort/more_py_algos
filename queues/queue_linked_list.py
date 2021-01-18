@@ -8,7 +8,7 @@ class Node:
 
 
 class Queue:
-    def __init__(self, nodes=None): # nodes: list
+    def __init__(self, nodes=None):  # nodes: list
         self.head = None
         self.tail = None
         if nodes:

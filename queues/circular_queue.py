@@ -1,5 +1,8 @@
+# go to circular_queue_2.py
+
 class Queue:
     """Circular queue, implemented using a Python list."""
+
     def __init__(self, max_size, q=None):   # q: list
         self.max_size = max_size
         self.q = [None for i in range(max_size)]
@@ -32,8 +35,10 @@ class Queue:
         else:
             self.q[self.tail + 1] = item
             self.tail += 1
-        
+
     def dequeue(self):
+        if self.is_empty():
+            raise IndexError("queue is empty")
         item = self.q[self.head]
         self.q[self.head] = None
         if self.head == len(self.q) - 1:
@@ -43,31 +48,15 @@ class Queue:
         return item
 
     def front(self):
+        if self.is_empty():
+            raise IndexError("queue is empty")
         return self.q[self.head]
 
     def rear(self):
+        if self.is_empty():
+            raise IndexError("queue is empty")
         return self.q[self.tail]
 
     def clear(self):
         self.q.clear()
 
-
-q = Queue(5, [1, 2, 3, 4])
-# q = Queue(5)
-print(q)
-print(q.is_empty())
-print(q.is_full())
-print(q.head)
-print(q.tail)
-q.enqueue(5)
-print(q)
-print(q.dequeue())
-print(q)
-print(q.front())
-print(q.rear())
-q.enqueue(6)
-print(q)
-print(q.dequeue())
-print(q)
-print(q.front())
-print(q.rear())

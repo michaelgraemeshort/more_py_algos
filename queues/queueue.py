@@ -1,4 +1,5 @@
 # just use collections.deque
+# don't call this queue.py. renders standard library module of same name inaccessible
 
 class Queue:
     def __init__(self, q=None): # q: list
