@@ -1,6 +1,6 @@
 from collections import deque
 
-# binary tree
+# binary tree experimentation
 
 
 class Node:
@@ -27,10 +27,9 @@ class Node:
 
 
 def pre_order(node):
-    print(node)
-    if node.left:
+    if node:
+        print(node)
         pre_order(node.left)
-    if node.right:
         pre_order(node.right)
 
 
@@ -45,10 +44,9 @@ def pre_order(node):
 
 def in_order(node):
     # LNR
-    if node.left:
+    if node:
         in_order(node.left)
-    print(node)
-    if node.right:
+        print(node)
         in_order(node.right)
 
 
@@ -60,11 +58,11 @@ def in_order(node):
 
 
 def post_order(node):
-    if node.left:
+    # LRN
+    if node:
         post_order(node.left)
-    if node.right:
         post_order(node.right)
-    print(node)
+        print(node)
 
 
 # post_order(tree)
@@ -91,7 +89,7 @@ def level_order(node):
             q.append(front.right)
 
 
-def search(node, value):
+def contains(node, value):
     """Return True if value is present in node or any of its children. Otherwise, False."""
     q = deque()
     q.append(node)
@@ -166,8 +164,8 @@ def delete(node, value):
 # # level_order(tree)
 # pre_order(tree)
 
-tree = Node("root")
-for i in range(10):
-    insert(tree, i)
-delete(tree, 11)
-level_order(tree)
+tree = Node("4")
+for i in "261357":
+    insert(tree, int(i))
+# level_order(tree)
+in_order(tree)
