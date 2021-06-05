@@ -1,36 +1,28 @@
-# linked list revision/create circular linked list
-
-class Node:
-    def __init__(self, data=None):
-        self.data = data
-        self.next = None
-
-    def __str__(self):
-        return str(self.data)
+from random import randint
 
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+def merge(left, right):
+    i, j = 0, 0
+    merged = []
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            merged.append(left[i])
+            i += 1
+        elif left[i] > right[j]:
+            merged.append(right[j])
+            j += 1
+    while i < len(left):
+        merged.append(left[i])
+        i += 1
+    while j < len(right):
+        merged.append(right[j])
+        j += 1
+    return merged
 
-    def __str__(self):
-        nodes = []
-        node = self.head
-        while node:
-            nodes.append(str(node.data))
-            node = node.next
-        return " -> ".join(nodes)
+l = list(range(5))
 
+left = l[:len(l) // 2]
+right = l[len(l) // 2:]
 
-a = Node(1)
-b = Node(2)
-c = Node(3)
-
-a.next = b
-b.next = c
-c.next = a
-
-ll = LinkedList()
-ll.head = a
-
-print(ll)
+print(left)
+print(right)

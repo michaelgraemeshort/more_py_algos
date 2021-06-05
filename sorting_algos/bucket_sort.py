@@ -28,13 +28,22 @@ def bucket_sort(l):
             buckets[0].append(value)
         else:
             buckets[index].append(value)
-    sorted_l = []
     for bucket in buckets:
         insertion_sort(bucket)
-        sorted_l.extend(bucket)
-    return sorted_l
+    i = 0
+    for j in range(number_of_buckets):
+        for k in range(len(buckets[j])):
+            l[i] = buckets[j][k]
+            i += 1
+    # more readable, less space-efficient:
+    # sorted_l = []
+    # for bucket in buckets:
+    #     insertion_sort(bucket)
+    #     sorted_l.extend(bucket)
+    # return sorted_l
 
 
 print(test_list)
-test_list = bucket_sort(test_list)
+# test_list = bucket_sort(test_list)
+bucket_sort(test_list)
 print(test_list)
