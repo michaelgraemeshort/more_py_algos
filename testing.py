@@ -1,5 +1,6 @@
 # see more_testing
 
+from collections import deque
 from collections import defaultdict
 import heapq
 
@@ -42,6 +43,51 @@ class Graph:
                 node = heapq.heappop(priority_queue)[1]
         return shortest_path_lengths, prior_node
 
+    def bellman_ford(self, start):
+        # iterate through edges
+        # update shortest paths as appropriate
+        # if changes still being made after len(self.nodes) iterations, negative cycle must be present
+        # otherwise longest possible path will require (len(self.nodes) - 1) iterations (i.e. edge traversals) to find
+        # haven't tested this on a graph with a negative cycle so beware
+        # or any other graphs than the one below, for that matter
+        shortest_path_lengths = {node: float("inf") for node in self.nodes}
+        shortest_path_lengths[start] = 0
+        iterations = 0
+        updating = True
+        while updating and iterations <= len(self.nodes):
+            updating = False
+            iterations += 1
+            for edge in self.edges:
+                for neighbour in self.edges[edge]:
+                    length = shortest_path_lengths[edge] + self.edge_lengths[(edge, neighbour)]
+                    if length < shortest_path_lengths[neighbour]:
+                        shortest_path_lengths[neighbour] = length
+                        updating = True
+        return "negative cycle present" if updating else shortest_path_lengths
+
+
+
+
+
+        # nodes = self.nodes.copy()
+        # shortest_path_lengths = {node: float("inf") for node in nodes}
+        # node = start
+        # nodes.remove(node)
+        # nodes = deque(nodes)
+        # nodes.appendleft(start)
+        # shortest_path_lengths[node] = 0
+        # for nd in nodes:
+        #     for neighbour in self.edges[nd]:
+        #         path = shortest_path_lengths[nd] + self.edge_lengths[(nd, neighbour)]
+        #         if path < shortest_path_lengths[neighbour]:
+        #             shortest_path_lengths[neighbour] = path
+        # return shortest_path_lengths
+
+
+
+
+
+
 
 graph = Graph()
 
@@ -59,3 +105,4 @@ graph.add_edge("e", "g", 9)
 graph.add_edge("f", "g", 7)
 
 print(graph.dijkstra("a"))
+print(graph.bellman_ford("a"))
