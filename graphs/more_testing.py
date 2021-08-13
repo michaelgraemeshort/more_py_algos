@@ -2,6 +2,42 @@ from collections import defaultdict
 import heapq
 
 
+class disjoint_set:
+    # this is excellent https://www.techiedelight.com/disjoint-set-data-structure-union-find-algorithm/
+    # using hash table
+    # could use list
+    parents = {}
+    ranks = {}
+
+    def __init__(self, nodes):
+        for node in nodes:
+            self.parents[node] = node    # parent for each node is initialised to itself
+            self.ranks[node] = 0
+
+    def find(self, node):
+        # returns the root of the subset containing node
+        # path compression: if node is not root, change its parent to root
+        # benefiting subsequent find operations
+        if self.parents[node] != node:
+            self.parents[node] = self.find(self.parents[node])
+        return self.parents[node]
+
+    def union(self, node_1, node_2):
+        # union by rank
+        # attaches smaller tree to root of larger tree
+        # minimises tree depth
+        # improves search time complexity to O(log(n))
+        x = self.find(node_1)
+        y = self.find(node_2)
+        if self.ranks[y] > self.ranks[x]:
+            self.parents[x] = y
+        elif self.ranks[x] > self.ranks[y]:
+            self.parents[y] = x
+        else:
+            self.parents[x] = y
+            self.ranks[y] += 1
+
+
 class Graph:
     # sod "vertices"
     def __init__(self):                       # examples:
@@ -73,16 +109,12 @@ class Graph:
         return matrix
 
     def floyd_warshall(self):
+        # basic implementation
         # iterates through 2D array of path lengths
         # and on each iteration compares existing path length with path length via another node
         # iterates through all the other nodes
-        # for example, might compare the direct path from A to C with the path A -> B -> C and later A -> D -> C
-        # but: if A -> D -> C is shortest, and this is discovered late in the process...
-        # then any other paths that rely on A -> C that have already been determined will not be the shortest
-        # clearly this is not a problem, but why
-        # if the shortest path from A to B is via C, and later discover that A to C can be shortened via D, how to update A to B?
-        # in that case the shortest path won't be via C, it will be via C AND D
-        # so not a problem
+        # basically, on each iteration, you test if adding another node to the path shortens it
+        # so you can't get to a longer path before testing its shorter component paths
         shortest_path_lengths = self.adjacency_matrix()
         number_of_nodes = len(self.nodes)
         for k in range(number_of_nodes):
@@ -92,6 +124,77 @@ class Graph:
                                                       shortest_path_lengths[i][k] + shortest_path_lengths[k][j])
         return shortest_path_lengths
 
+    def kruskal(self):  # NEEDS TESTING and probably refactoring
+        # organise edge lengths
+        key_value_swap = {self.edge_lengths[key]: key for key in self.edge_lengths}
+        lengths = sorted(list(key_value_swap.keys()))
+        kvs = {key_value_swap[length]: length for length in lengths}
+        ds = disjoint_set(self.nodes)
+        unvisited = self.nodes.copy()
+        minimum_spanning_tree = []
+        while unvisited:
+            for vertices in kvs:
+                if ds.find(vertices[0]) == ds.find(vertices[1]):
+                    # cycle detected, do not add to spanning tree
+                else:
+                    ds.union(vertices[0], vertices[1])
+                    minimum_spanning_tree.append(vertices)
+                    for vertex in vertices:
+                        unvisited.remove(vertex)
+        cost = 0
+        for edge in minimum_spanning_tree:
+            cost += self.edge_lengths(edge)
+        return cost, minimum_spanning_tree
+
+
+class disjoint_set:
+    # this is excellent https://www.techiedelight.com/disjoint-set-data-structure-union-find-algorithm/
+    # using hash table
+    # could use list
+    parents = {}
+    ranks = {}
+
+    def __init__(self, nodes):
+        for node in nodes:
+            self.parents[node] = node    # parent for each node is initialised to itself
+            self.ranks[node] = 0
+
+    def find(self, node):
+        # returns the root of the subset containing node
+        # path compression: if node is not root, change its parent to root
+        # benefiting subsequent find operations
+        if self.parents[node] != node:
+            self.parents[node] = self.find(self.parents[node])
+        return self.parents[node]
+
+    def union(self, node_1, node_2):
+        # union by rank
+        # attaches smaller tree to root of larger tree
+        # minimises tree depth
+        # improves search time complexity to O(log(n))
+        x = self.find(node_1)
+        y = self.find(node_2)
+        if self.ranks[y] > self.ranks[x]:
+            self.parents[x] = y
+        elif self.ranks[x] > self.ranks[y]:
+            self.parents[y] = x
+        else:
+            self.parents[x] = y
+            self.ranks[y] += 1
+
+# disjoint (non-overlapping) sets: a group of sets in which no item can be in more than one set
+# AKA union-find data structure
+# useful for cycle detection
+# kruskal's:
+# create a disjoint set - each vertex in its own subset
+# iterate through edges of graph, in order of increasing weight
+# for each edge, use the find operation to check if its vertices are in different sets
+# by comparing their parents (same parent, same set)
+# if different, perform union operation
+# by taking the root of the subset containing each vertex, and making one the parent of the other
+# thus building sets of connected vertices
+# if False, the edge connects vertices that are already in the same set, creating a cycle
+# for example, if 1, 2, and 3 are connected, you cannot add an edge connecting 1 and 3 without creating a cycle
 
 graph = Graph()
 
@@ -126,7 +229,6 @@ graph.add_edge("b", "c", 2)
 graph.add_edge("c", "b", 2)
 graph.add_edge("c", "d", 1)
 graph.add_edge("d", "c", 1)
-
 
 argh = graph.floyd_warshall()
 for row in argh:
