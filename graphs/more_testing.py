@@ -124,11 +124,12 @@ class Graph:
                                                       shortest_path_lengths[i][k] + shortest_path_lengths[k][j])
         return shortest_path_lengths
 
-    def kruskal(self):  # NEEDS TESTING and probably refactoring
+    def kruskal(self):  # offhand
         # organise edge lengths
         key_value_swap = {self.edge_lengths[key]: key for key in self.edge_lengths}
         lengths = sorted(list(key_value_swap.keys()))
         kvs = {key_value_swap[length]: length for length in lengths}
+        # (or convert self.edge_lengths to list and sort by lengths)
         ds = disjoint_set(self.nodes)
         unvisited = self.nodes.copy()
         minimum_spanning_tree = []
@@ -136,51 +137,18 @@ class Graph:
             for vertices in kvs:
                 if ds.find(vertices[0]) == ds.find(vertices[1]):
                     # cycle detected, do not add to spanning tree
+                    continue
                 else:
                     ds.union(vertices[0], vertices[1])
                     minimum_spanning_tree.append(vertices)
                     for vertex in vertices:
-                        unvisited.remove(vertex)
+                        if vertex in unvisited:
+                            unvisited.remove(vertex)
         cost = 0
         for edge in minimum_spanning_tree:
-            cost += self.edge_lengths(edge)
+            cost += self.edge_lengths[edge]
         return cost, minimum_spanning_tree
 
-
-class disjoint_set:
-    # this is excellent https://www.techiedelight.com/disjoint-set-data-structure-union-find-algorithm/
-    # using hash table
-    # could use list
-    parents = {}
-    ranks = {}
-
-    def __init__(self, nodes):
-        for node in nodes:
-            self.parents[node] = node    # parent for each node is initialised to itself
-            self.ranks[node] = 0
-
-    def find(self, node):
-        # returns the root of the subset containing node
-        # path compression: if node is not root, change its parent to root
-        # benefiting subsequent find operations
-        if self.parents[node] != node:
-            self.parents[node] = self.find(self.parents[node])
-        return self.parents[node]
-
-    def union(self, node_1, node_2):
-        # union by rank
-        # attaches smaller tree to root of larger tree
-        # minimises tree depth
-        # improves search time complexity to O(log(n))
-        x = self.find(node_1)
-        y = self.find(node_2)
-        if self.ranks[y] > self.ranks[x]:
-            self.parents[x] = y
-        elif self.ranks[x] > self.ranks[y]:
-            self.parents[y] = x
-        else:
-            self.parents[x] = y
-            self.ranks[y] += 1
 
 # disjoint (non-overlapping) sets: a group of sets in which no item can be in more than one set
 # AKA union-find data structure
@@ -216,20 +184,40 @@ graph = Graph()
 
 # graph.adjacency_matrix()
 
-for i in "abcd":
+# for i in "abcd":
+#     graph.add_node(i)
+
+# graph.add_edge("a", "b", 6)
+# graph.add_edge("b", "a", 6)
+# graph.add_edge("a", "c", 3)
+# graph.add_edge("c", "a", 3)
+# graph.add_edge("a", "d", 1)
+# graph.add_edge("d", "a", 1)
+# graph.add_edge("b", "c", 2)
+# graph.add_edge("c", "b", 2)
+# graph.add_edge("c", "d", 1)
+# graph.add_edge("d", "c", 1)
+
+# argh = graph.floyd_warshall()
+# for row in argh:
+#     print(row)
+
+for i in "abcde":
     graph.add_node(i)
 
-graph.add_edge("a", "b", 6)
-graph.add_edge("b", "a", 6)
-graph.add_edge("a", "c", 3)
-graph.add_edge("c", "a", 3)
-graph.add_edge("a", "d", 1)
-graph.add_edge("d", "a", 1)
-graph.add_edge("b", "c", 2)
-graph.add_edge("c", "b", 2)
-graph.add_edge("c", "d", 1)
-graph.add_edge("d", "c", 1)
+graph.add_edge("a", "b", 5)
+graph.add_edge("a", "c", 13)
+graph.add_edge("a", "e", 15)
+graph.add_edge("b", "a", 5)
+graph.add_edge("b", "c", 10)
+graph.add_edge("b", "d", 8)
+graph.add_edge("c", "a", 13)
+graph.add_edge("c", "b", 10)
+graph.add_edge("c", "e", 20)
+graph.add_edge("c", "d", 6)
+graph.add_edge("d", "b", 8)
+graph.add_edge("d", "c", 6)
+graph.add_edge("e", "a", 15)
+graph.add_edge("e", "c", 20)
 
-argh = graph.floyd_warshall()
-for row in argh:
-    print(row)
+print(graph.kruskal())
