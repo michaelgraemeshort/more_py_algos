@@ -1,3 +1,5 @@
+# variable names need work
+
 from collections import defaultdict
 import heapq
 
@@ -78,7 +80,7 @@ class Graph:
         # if changes still being made after len(self.nodes) iterations, negative cycle must be present
         # otherwise longest possible path will require (len(self.nodes) - 1) iterations (i.e. edge traversals) to find
         # haven't tested this on a graph with a negative cycle so beware
-        # or any other graphs than the one below, for that matter
+        # or any graphs other than the one below, for that matter
         shortest_path_lengths = {node: float("inf") for node in sorted(list(self.nodes))}
         shortest_path_lengths[start] = 0
         iterations = 0
@@ -111,7 +113,7 @@ class Graph:
     def floyd_warshall(self):
         # basic implementation
         # iterates through 2D array of path lengths
-        # and on each iteration compares existing path length with path length via another node
+        # and on each iteration compares existing path length with path length via another node (k)
         # iterates through all the other nodes
         # basically, on each iteration, you test if adding another node to the path shortens it
         # so you can't get to a longer path before testing its shorter component paths
@@ -124,12 +126,11 @@ class Graph:
                                                       shortest_path_lengths[i][k] + shortest_path_lengths[k][j])
         return shortest_path_lengths
 
-    def kruskal(self):  # offhand
+    def kruskal(self):  # offhand. notes below
         # organise edge lengths
         key_value_swap = {self.edge_lengths[key]: key for key in self.edge_lengths}
         lengths = sorted(list(key_value_swap.keys()))
         kvs = {key_value_swap[length]: length for length in lengths}
-        # (or convert self.edge_lengths to list and sort by lengths)
         ds = disjoint_set(self.nodes)
         unvisited = self.nodes.copy()
         minimum_spanning_tree = []
@@ -148,6 +149,39 @@ class Graph:
         for edge in minimum_spanning_tree:
             cost += self.edge_lengths[edge]
         return cost, minimum_spanning_tree
+
+    def prim(self):
+        # create tree by picking a node
+        # extend tree by connecting nearest unvisited node
+        # continue to extend until all nodes visited
+        # make a min heap of edges connected to tree
+        # add to heap as appropriate
+        # don't add edges that lead to already-visited nodes 
+        unvisited = self.nodes.copy()
+        cost = 0    # total edge weight for MST
+        tree = []
+        # make a min heap of nodes connected to tree
+        connections = []
+        node = unvisited.pop()
+        while unvisited:
+            # add connected nodes to connections
+            for neighbour in self.neighbours[node]: # {"a": ["b", "c"], "b": ["c"]}
+                if neighbour in unvisited:
+                    # look up edge weight from node to neighbour
+                    weight = self.edge_lengths[(node, neighbour)]   # {("a", "b"): 3, ("a", "c"): 5, ("b", "c"): 4}
+                    # add neighbour to heap
+                    heapq.heappush(connections, (weight, (node, neighbour)))    # (3, ("a", "b"))
+            # pop out nearest unvisited node
+            nearest_node = heapq.heappop(connections)
+            # add edge weight to total cost for MST
+            cost += nearest_node[0]
+            # add newly connected node to tree variable
+            tree.append(nearest_node[1])
+            # remove new_node from unvisited
+            unvisited.remove(nearest_node[1][1])
+            # repeat process, adding nodes connected to new node
+            node = nearest_node[1][1]
+        return cost, tree
 
 
 # disjoint (non-overlapping) sets: a group of sets in which no item can be in more than one set
@@ -221,3 +255,4 @@ graph.add_edge("e", "a", 15)
 graph.add_edge("e", "c", 20)
 
 print(graph.kruskal())
+print(graph.prim())

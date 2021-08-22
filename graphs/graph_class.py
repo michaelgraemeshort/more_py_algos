@@ -103,6 +103,7 @@ class Graph:
                 # new_path = path[:]    # better
                 new_path = path.copy()  # most explicit
                 new_path.append(connection)
+                # could check if last_node == target here too I guess and return early
                 q.append(new_path)
 
     def dijkstra(self, start, end):
