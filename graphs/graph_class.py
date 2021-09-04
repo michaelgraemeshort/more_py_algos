@@ -89,7 +89,7 @@ class Graph:
         shortest_path.reverse()
         return shortest_path
 
-    def bfs(self, root, target):    # from the course
+    def bfs(self, root, target):    # from the course. also graph_challenges/route_between_nodes.py
         q = deque()
         # note [] below - this is a queue of lists of possible paths from root, in order of increasing length
         q.append([root])
