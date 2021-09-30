@@ -168,4 +168,5 @@ tree = Node("4")
 for i in "261357":
     insert(tree, int(i))
 # level_order(tree)
-in_order(tree)
+# in_order(tree)
+post_order(tree)
