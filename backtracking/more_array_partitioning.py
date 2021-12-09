@@ -1,24 +1,38 @@
-# alternative non-backtracking approach
-# modified power set
-# broken, perhaps fix later
+from itertools import combinations
+from random import randint
 
 
-def partition(right):
+def partition(arr):
 
-    def inner(left, index, target):
-        if index == len(right):
-            return []
-        dont_add = left + inner(left, index + 1, target)
-        if sum(left) + right[index] <= target:
-            left.append(right[index])
-            add = left + inner(left, index + 1, target)
-            return max(dont_add, add)
-        return dont_add
+    def combination_generator(l, maximum):
+        for i in range(1, len(l) + 1):
+            for combination in combinations(l, i):
+                if sum(combination) <= maximum:
+                    yield combination
 
-    target = sum(right) // 2
-    return inner([], 0, target)
+    target = sum(arr) // 2
+    comb_gen = combination_generator(arr, target)
+    best = []
+
+    while True:
+        try:
+            combination = next(comb_gen)
+            if sum(combination) == target:
+                best = list(combination)
+                break
+            elif abs(target - sum(combination)) < abs(target - sum(best)):
+                best = list(combination)
+        except StopIteration:
+            break
+
+    for n in best:
+        arr.remove(n)
+
+    return best, arr
 
 
-l = [9, 9, 3]
-
-print(partition(l))
+l = [randint(-10, 10) for i in range(20)]
+result = partition(l)
+print(f"{result=}")
+print(f"{sum(result[0])=}")
+print(f"{sum(result[1])=}")

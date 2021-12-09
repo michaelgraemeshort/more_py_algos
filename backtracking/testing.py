@@ -1,25 +1,30 @@
-# works but is horrible
+# currently handles non-negative integers only
+
+from random import randint
+
 
 def partition(arr):
 
-    def inner(subarr, index, target):
+    subarrays = []
+
+    def create_valid_subarrays(subarray, index, maximum):
         if index == len(arr):
-            subarrs.append(subarr)
+            subarrays.append(subarray)
             return
-        if sum(subarr) + arr[index] > target:
-            inner(subarr, index + 1, target)
-            return
-        inner(subarr, index + 1, target)
-        inner(subarr + [arr[index]], index + 1, target)
+        if sum(subarray) + arr[index] <= maximum:
+            create_valid_subarrays(subarray, index + 1, maximum)
+            create_valid_subarrays(subarray + [arr[index]], index + 1, maximum)
 
-    subarrs = []
     target = sum(arr) // 2
-    inner([], 0, target)
-    max_subarr = max(subarrs)
-    for i in max_subarr:
+    create_valid_subarrays([], 0, target)
+    best = max(subarrays, key=lambda x: sum(x))
+    for i in best:
         arr.remove(i)
-    return max_subarr, arr
+    return best, arr
 
 
-l = [5, 4, 3, 2, 1]
-print(partition(l))
+l = [randint(0, 10) for i in range(20)]
+result = partition(l)
+print(f"{result=}")
+print(f"{sum(result[0])=}")
+print(f"{sum(result[1])=}")
