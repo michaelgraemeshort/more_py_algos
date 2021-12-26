@@ -1,4 +1,4 @@
-# copied. understand, refactor
+# mildly finessed copy. understand, refactor
 
 class NQueens:
     def __init__(self, n):

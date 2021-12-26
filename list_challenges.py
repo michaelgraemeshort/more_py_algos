@@ -19,10 +19,12 @@ def two_sum(l: list, n: int) -> list:
 
 def max_product_of_two(l: list) -> int:
     highest, second_highest = 0, 0
-    for i in l:
-        if i > highest:
+    for number in l:
+        if number > highest:
             second_highest = highest
-            highest = i
+            highest = number 
+        elif number > second_highest:
+            second_highest = number 
     return highest * second_highest
 
 

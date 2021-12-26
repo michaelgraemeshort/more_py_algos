@@ -1,3 +1,5 @@
+# lunch break special
+
 class ChessBoard:
     def __init__(self, n):
         self.matrix = [[0 for i in range(n)] for j in range(n)]
