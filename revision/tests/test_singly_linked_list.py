@@ -13,7 +13,7 @@ from linked_lists.singly_linked_list import (
 )  # might alter this file structure. also, Black is responsible for this weird formatting
 
 
-class TestSinglyLinkedList(unittest.TestCase):
+class SinglyLinkedListTests(unittest.TestCase):
     def test_getitem(self):
         built_in_list = [0, 1, 2, 3, 4, 5]
         linked_list = LinkedList(built_in_list)
@@ -23,6 +23,7 @@ class TestSinglyLinkedList(unittest.TestCase):
         # test slices
         self.assertEqual(built_in_list[:3], linked_list[:3])
         self.assertEqual(built_in_list[3:], linked_list[3:])
+        self.assertEqual(built_in_list[10:], linked_list[10:])
         self.assertEqual(built_in_list[:10:2], linked_list[:10:2])
         self.assertEqual(built_in_list[::3], linked_list[::3])
         # test error handling. note weird syntax
