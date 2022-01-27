@@ -111,7 +111,7 @@ class LinkedList:
 
     def __iadd__(self, other):
         """Return self += other."""
-        return self.__add__(other)
+        return self + other 
 
     def __mul__(self, value):
         """Return self * value."""
@@ -122,7 +122,7 @@ class LinkedList:
 
     def __imul__(self, value):
         """Return self *= value."""
-        return self.__mul__(value)
+        return self * value 
 
     def __str__(self):
         return str([node.value for node in self])

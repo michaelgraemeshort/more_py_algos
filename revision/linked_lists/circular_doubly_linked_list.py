@@ -1,32 +1,33 @@
 # creation, insertion, traversal, search, delete, clear
-# manual testing only
 
 
 class Node:
-    """Node for circular singly linked list."""
+    """Node for circular doubly linked list."""
 
     def __init__(self, value):
         self.value = value
         self.next = None
+        self.prev = None
 
     def __str__(self):
         return str(self.value)
 
 
 class CircularLinkedList:
-    """Circular singly linked list."""
+    """Circular doubly linked list."""
 
     def __init__(self, iterable=None):
-        self.head = None
-        self.tail = None
+        self.head = None  # no tail, this time
         if iterable:
-            self.head = Node(iterable[0])
-            node = self.head
+            node = Node(iterable[0])
+            self.head = node
             for i in iterable[1:]:
-                node.next = Node(i)
-                node = node.next
-            self.tail = node  # helpful to have two pointers for other methods
+                new_node = Node(i)
+                node.next = new_node
+                new_node.prev = node
+                node = new_node
             node.next = self.head
+            self.head.prev = node
 
     def __contains__(self, value):
         if not self.head:
@@ -40,54 +41,64 @@ class CircularLinkedList:
                 return False
 
     def __str__(self):
+        return str(self.traverse())
+
+    def traverse(self, reverse=False):
+        """Returns a list representation of the CircularLinkedList."""
         output = []
         node = self.head
-        while node:
-            output.append(node.value)
-            node = node.next
-            if node == self.head:
-                break
-        return str(output)
+        if reverse:
+            while True:
+                output.append(node.value)
+                node = node.prev
+                if node == self.head:
+                    break
+        else:
+            while True:
+                output.append(node.value)
+                node = node.next
+                if node == self.head:
+                    break
+        return output
 
     def insert(self, index, value):
         """Insert value before index."""
         new_node = Node(value)
-        node = self.head
-        prev_node = self.tail
-        if not node:
+        if not self.head:
             self.head = new_node
-            self.tail = new_node
             new_node.next = new_node
+            new_node.prev = new_node
             return
+        node = self.head
         for i in range(index):
-            prev_node = node
             node = node.next
-        prev_node.next = new_node
         new_node.next = node
-        if index == 0:
+        new_node.prev = node.prev
+        node.prev.next = new_node
+        node.prev = new_node
+        if node == self.head:
             self.head = new_node
-            return
-        if prev_node == self.tail:
-            self.tail = new_node
 
     def remove(self, value):
         """Remove first occurrence of value."""
         if not self.head:
             raise ValueError("CircularLinkedList is empty.")
         node = self.head
-        prev_node = self.tail
         while True:
             if node.value == value:
-                prev_node.next = node.next
+                # one item list
+                if node.next == node:
+                    return self.clear()
+                # otherwise
+                node.prev.next = node.next
+                node.next.prev = node.prev
                 if node == self.head:
                     self.head = node.next
-                elif node == self.tail:
-                    self.tail = prev_node
                 return
-            prev_node = node
             node = node.next
             if node == self.head:
-                raise ValueError("CircularLinkedList is empty.")
+                break
+        raise ValueError("CircularLinkedList is empty.")
 
     def clear(self):
         """Remove all items from CircularLinkedList."""

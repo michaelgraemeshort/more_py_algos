@@ -1,5 +1,6 @@
 # pytest rather than unittest this time
 # missing tests: overlap with singly_linked_list.py
+# just run pytest
 
 import pytest  # otherwise can't use e.g. with pytest.raises()
 
