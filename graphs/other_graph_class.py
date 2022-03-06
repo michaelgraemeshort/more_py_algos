@@ -1,4 +1,5 @@
 # variable names need work
+# revisited this, some issues, see comments
 
 from collections import defaultdict
 import heapq
@@ -56,6 +57,7 @@ class Graph:
 
     def dijkstra(self, start):
         # returns the shortest path lengths and routes from start node to ALL other nodes
+        # this is wrong - revisits visited nodes
         unvisited = self.nodes.copy()
         shortest_path_lengths = {node: float("inf") for node in sorted(list(self.nodes))}
         prior_node = {node: None for node in sorted(list(self.nodes))}
@@ -81,6 +83,7 @@ class Graph:
         # otherwise longest possible path will require (len(self.nodes) - 1) iterations (i.e. edge traversals) to find
         # haven't tested this on a graph with a negative cycle so beware
         # or any graphs other than the one below, for that matter
+        # why no prior_node here?
         shortest_path_lengths = {node: float("inf") for node in sorted(list(self.nodes))}
         shortest_path_lengths[start] = 0
         iterations = 0
@@ -175,7 +178,7 @@ class Graph:
             nearest_node = heapq.heappop(connections)
             # add edge weight to total cost for MST
             cost += nearest_node[0]
-            # add newly connected node to tree variable
+            # add newly connected node to tree variable # POINTLESS add the edge not the node
             tree.append(nearest_node[1])
             # remove new_node from unvisited
             unvisited.remove(nearest_node[1][1])

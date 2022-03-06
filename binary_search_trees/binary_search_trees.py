@@ -118,7 +118,7 @@ class BinarySearchTree:
     def _delete(self, node, parent, is_left, value):
         # a monster
         # cases to account for here:
-        # 1. node with node children. point parent node left or right at None
+        # 1. node with no children. point parent node left or right at None
         # 2. node with one child. point parent node left or right at child
         # 3. node with two children. see below
         # 4. account for whether node is root in each of the above cases
